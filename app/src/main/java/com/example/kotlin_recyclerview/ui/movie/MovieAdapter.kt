@@ -10,15 +10,21 @@ import com.example.kotlin_recyclerview.data.models.Movie
 import com.example.kotlin_recyclerview.databinding.RecyclerviewMovieBinding
 
 class MovieAdapter(
-    private val movies : List<Movie>,
     private val listener : RecyclerClickListener
 ) : RecyclerView.Adapter<MovieAdapter.MoviesViewHolder>() {
+
+    private val movies = ArrayList<Movie>()
 
     inner class MoviesViewHolder(
         val recyclerViewMovieBinding : RecyclerviewMovieBinding
     ) : RecyclerView.ViewHolder(recyclerViewMovieBinding.root)
 
     override fun getItemCount() = movies.size
+
+    fun setList(movieList: List<Movie>){
+        movies.clear()
+        movies.addAll(movieList)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         MoviesViewHolder(

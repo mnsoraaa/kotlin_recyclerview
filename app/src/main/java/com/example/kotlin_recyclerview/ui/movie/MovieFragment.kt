@@ -1,6 +1,5 @@
 package com.example.kotlin_recyclerview.ui.movie
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -26,6 +25,7 @@ class MovieFragment : Fragment(), RecyclerClickListener {
 
     private lateinit var factory: MoviesViewModelFactory
     private lateinit var viewModel: MovieViewModel
+    private lateinit var adapter: MovieAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,18 +39,21 @@ class MovieFragment : Fragment(), RecyclerClickListener {
         // viewModel = ViewModelProvider(this).get(MoviesViewModel::class.java)
 
         val api = MoviesApi()
-        val repository =
-            MoviesRepository(api)
-        factory =
-            MoviesViewModelFactory(repository)
+        val repository = MoviesRepository(api)
+        factory = MoviesViewModelFactory(repository)
+
         viewModel = ViewModelProvider(this, factory).get(MovieViewModel::class.java)
         viewModel.getMovies()
+
+        adapter = MovieAdapter(this)
+        recycler_view_movies.layoutManager = LinearLayoutManager(requireContext())
+        recycler_view_movies.setHasFixedSize(true)
+        recycler_view_movies.adapter = adapter
+
         viewModel.moviesList.observe(viewLifecycleOwner, Observer {
                 movies -> recycler_view_movies.also {
-                    it.layoutManager = LinearLayoutManager(requireContext())
-                    it.setHasFixedSize(true)
-                    it.adapter =
-                        MovieAdapter(movies, this)
+                    adapter.setList(movies)
+                    adapter.notifyDataSetChanged()
                 }
         })
     }
